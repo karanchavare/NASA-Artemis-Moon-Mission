@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NASA Artemis Mission — Send Your Name to the Moon</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+
+  :root {
+    --nasa-blue: #0b3d91;
+    --nasa-red: #fc3d21;
+    --space-dark: #04080f;
+    --star-white: #e8f4fd;
+    --moon-gray: #c8d6e0;
+    --accent-gold: #ffd700;
+    --glow-blue: #4fc3f7;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--space-dark);
+    color: var(--star-white);
+    font-family: 'Space Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* STARFIELD */
+  #starfield {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .star {
+    position: absolute;
+    border-radius: 50%;
+    background: white;
+    animation: twinkle var(--d, 3s) ease-in-out infinite alternate;
+  }
+  @keyframes twinkle {
+    from { opacity: 0.2; transform: scale(1); }
+    to   { opacity: 1;   transform: scale(1.4); }
+  }
+
+  /* LAYOUT */
+  .page { position: relative; z-index: 1; }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(180deg, rgba(11,61,145,0.95) 0%, rgba(4,8,15,0) 100%);
+    padding: 18px 40px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    border-bottom: 1px solid rgba(79,195,247,0.2);
+  }
+  .nasa-logo {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .nasa-meatball {
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    background: var(--nasa-blue);
+    border: 3px solid white;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 900; font-size: 11px;
+    color: white;
+    text-align: center;
+    line-height: 1.1;
+    letter-spacing: 1px;
+    box-shadow: 0 0 20px rgba(79,195,247,0.4);
+    animation: logoPulse 4s ease-in-out infinite;
+  }
+  @keyframes logoPulse {
+    0%,100% { box-shadow: 0 0 20px rgba(79,195,247,0.4); }
+    50%      { box-shadow: 0 0 40px rgba(79,195,247,0.8), 0 0 80px rgba(79,195,247,0.2); }
+  }
+  .site-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--glow-blue);
+  }
+
+  /* HERO */
+  .hero {
+    padding: 60px 40px 0;
+    text-align: center;
+    position: relative;
+  }
+
+  .artemis-badge {
+    display: inline-block;
+    background: var(--nasa-red);
+    color: white;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11px;
+    letter-spacing: 4px;
+    padding: 6px 18px;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    clip-path: polygon(8px 0%, calc(100% - 8px) 0%, 100% 50%, calc(100% - 8px) 100%, 8px 100%, 0% 50%);
+    animation: badgePop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+    animation-delay: 0.3s;
+  }
+  @keyframes badgePop {
+    from { opacity: 0; transform: scale(0.5); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+
+  h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(28px, 5vw, 56px);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    color: var(--star-white);
+    text-shadow: 0 0 40px rgba(79,195,247,0.5);
+    animation: fadeUp 0.8s ease both;
+    animation-delay: 0.5s;
+  }
+  h1 span { color: var(--glow-blue); }
+
+  .subtitle {
+    margin-top: 16px;
+    font-size: 15px;
+    color: var(--moon-gray);
+    letter-spacing: 1px;
+    max-width: 600px;
+    margin-inline: auto;
+    animation: fadeUp 0.8s ease both;
+    animation-delay: 0.7s;
+    line-height: 1.7;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* MOON SCENE */
+  .moon-scene {
+    position: relative;
+    margin: 40px auto 0;
+    width: 340px; height: 340px;
+  }
+  .moon {
+    width: 260px; height: 260px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #e8e8e8, #b0bec5 40%, #78909c 70%, #546e7a);
+    box-shadow:
+      inset -30px -20px 50px rgba(0,0,0,0.5),
+      0 0 60px rgba(200,214,224,0.15),
+      0 0 120px rgba(200,214,224,0.05);
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    animation: moonFloat 6s ease-in-out infinite;
+  }
+  @keyframes moonFloat {
+    0%,100% { transform: translate(-50%, -50%) translateY(0); }
+    50%      { transform: translate(-50%, -50%) translateY(-12px); }
+  }
+  /* craters */
+  .moon::before, .moon::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 40%, rgba(255,255,255,0.1), rgba(0,0,0,0.25));
+    box-shadow: inset 2px 2px 6px rgba(0,0,0,0.4);
+  }
+  .moon::before { width: 50px; height: 50px; top: 55px; left: 75px; }
+  .moon::after  { width: 30px; height: 30px; top: 120px; left: 150px; }
+
+  /* orbiting ring of names */
+  .orbit-ring {
+    position: absolute;
+    width: 320px; height: 320px;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    border: 1px dashed rgba(79,195,247,0.3);
+    animation: orbitSpin 20s linear infinite;
+  }
+  @keyframes orbitSpin { to { transform: translate(-50%, -50%) rotate(360deg); } }
+
+  .orbit-dot {
+    position: absolute;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--glow-blue);
+    box-shadow: 0 0 10px var(--glow-blue);
+    top: -4px; left: 50%; margin-left: -4px;
+  }
+  .orbit-dot::after {
+    content: 'YOUR NAME';
+    position: absolute;
+    top: -20px; left: 50%;
+    transform: translateX(-50%);
+    font-size: 8px;
+    color: var(--glow-blue);
+    white-space: nowrap;
+    letter-spacing: 1px;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    margin: 48px 40px 0;
+    border: 1px solid rgba(79,195,247,0.2);
+    border-radius: 4px;
+    overflow: hidden;
+    max-width: 860px;
+    margin-inline: auto;
+    animation: fadeUp 0.8s ease both;
+    animation-delay: 1s;
+  }
+  .stat {
+    flex: 1;
+    padding: 22px 16px;
+    text-align: center;
+    border-right: 1px solid rgba(79,195,247,0.15);
+    background: rgba(11,61,145,0.12);
+    transition: background 0.3s;
+  }
+  .stat:last-child { border-right: none; }
+  .stat:hover { background: rgba(79,195,247,0.08); }
+  .stat-num {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--glow-blue);
+    display: block;
+  }
+  .stat-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--moon-gray);
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  /* MAIN CTA CARD */
+  .cta-section {
+    max-width: 780px;
+    margin: 60px auto;
+    padding: 0 24px;
+    animation: fadeUp 0.8s ease both;
+    animation-delay: 1.2s;
+  }
+
+  .cta-card {
+    background: linear-gradient(135deg, rgba(11,61,145,0.35) 0%, rgba(4,8,15,0.8) 100%);
+    border: 1px solid rgba(79,195,247,0.25);
+    border-radius: 12px;
+    padding: 48px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 70% 0%, rgba(79,195,247,0.08) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .cta-card h2 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--star-white);
+    margin-bottom: 12px;
+  }
+  .cta-card p {
+    font-size: 14px;
+    color: var(--moon-gray);
+    line-height: 1.8;
+    margin-bottom: 20px;
+  }
+  .highlight { color: var(--accent-gold); font-weight: 700; }
+
+  .deadline {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(252,61,33,0.12);
+    border: 1px solid rgba(252,61,33,0.3);
+    border-radius: 4px;
+    padding: 8px 16px;
+    margin-bottom: 32px;
+    font-size: 12px;
+    color: #ff7f6e;
+    letter-spacing: 1px;
+  }
+  .deadline-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--nasa-red);
+    animation: blink 1s ease-in-out infinite;
+  }
+  @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+
+  /* THE PRANK BUTTON */
+  .prank-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    background: linear-gradient(135deg, var(--nasa-blue) 0%, #1565c0 50%, var(--nasa-blue) 100%);
+    background-size: 200% 100%;
+    color: white;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 18px 40px;
+    border: 2px solid rgba(79,195,247,0.5);
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 30px rgba(11,61,145,0.5), inset 0 0 30px rgba(79,195,247,0.05);
+    animation: btnPulse 3s ease-in-out infinite;
+  }
+  @keyframes btnPulse {
+    0%,100% { box-shadow: 0 0 30px rgba(11,61,145,0.5), inset 0 0 30px rgba(79,195,247,0.05); }
+    50%      { box-shadow: 0 0 50px rgba(79,195,247,0.4), inset 0 0 30px rgba(79,195,247,0.1); }
+  }
+  .prank-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.5s;
+  }
+  .prank-btn:hover::before { transform: translateX(100%); }
+  .prank-btn:hover {
+    border-color: var(--glow-blue);
+    background-position: right center;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 40px rgba(79,195,247,0.3);
+  }
+  .btn-icon { font-size: 20px; animation: rocketBob 1.5s ease-in-out infinite; }
+  @keyframes rocketBob {
+    0%,100% { transform: translateY(0) rotate(-45deg); }
+    50%      { transform: translateY(-4px) rotate(-45deg); }
+  }
+
+  /* ============================
+     APRIL FOOL OVERLAY
+  ============================ */
+  #foolOverlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: var(--space-dark);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 24px;
+  }
+  #foolOverlay.show { display: flex; }
+
+  /* Stage 1: Countdown */
+  #stage-launch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+  .launch-text {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 13px;
+    letter-spacing: 4px;
+    color: var(--glow-blue);
+    text-transform: uppercase;
+  }
+  .countdown-num {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(80px, 20vw, 160px);
+    font-weight: 900;
+    color: white;
+    line-height: 1;
+    animation: countPop 1s cubic-bezier(0.175,0.885,0.32,1.275) forwards;
+    text-shadow: 0 0 60px rgba(79,195,247,0.6);
+  }
+  @keyframes countPop {
+    0% { transform: scale(0.2); opacity: 0; }
+    70% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .progress-bar-wrap {
+    width: 300px; height: 4px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--glow-blue);
+    width: 0%;
+    transition: width 0.9s linear;
+    box-shadow: 0 0 8px var(--glow-blue);
+  }
+  .exhaust {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+  }
+  .exhaust-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--nasa-red);
+    animation: exhaustPulse 0.4s ease-in-out infinite alternate;
+  }
+  .exhaust-dot:nth-child(2) { animation-delay: 0.1s; background: #ff8c00; }
+  .exhaust-dot:nth-child(3) { animation-delay: 0.2s; background: var(--accent-gold); }
+  @keyframes exhaustPulse { from { opacity: 0.3; transform: scale(0.8); } to { opacity: 1; transform: scale(1.2); } }
+
+  /* Stage 2: April Fool Reveal */
+  #stage-fool {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    animation: foolReveal 0.8s cubic-bezier(0.175,0.885,0.32,1.275) both;
+  }
+  @keyframes foolReveal {
+    from { transform: scale(0.5) rotate(-5deg); opacity: 0; }
+    to   { transform: scale(1) rotate(0deg); opacity: 1; }
+  }
+
+  .fool-emoji {
+    font-size: 80px;
+    animation: spin 0.6s ease both, wobble 2s ease-in-out 0.6s infinite;
+  }
+  @keyframes spin { from { transform: rotate(-180deg) scale(0); } to { transform: rotate(0) scale(1); } }
+  @keyframes wobble {
+    0%,100% { transform: rotate(-5deg); }
+    50%     { transform: rotate(5deg); }
+  }
+
+  .fool-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(32px, 8vw, 64px);
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--nasa-red), var(--accent-gold), var(--glow-blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -1px;
+    text-shadow: none;
+  }
+
+  .fool-sub {
+    font-size: 16px;
+    color: var(--moon-gray);
+    max-width: 500px;
+    line-height: 1.7;
+  }
+  .fool-sub strong { color: var(--accent-gold); }
+
+  .confetti-wrap {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 999;
+  }
+  .confetti-piece {
+    position: absolute;
+    width: 8px; height: 14px;
+    top: -20px;
+    border-radius: 2px;
+    animation: confettiFall linear forwards;
+  }
+  @keyframes confettiFall {
+    to { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+  }
+
+  .real-link-row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-top: 8px;
+  }
+  .real-link-label {
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: #78909c;
+    text-transform: uppercase;
+  }
+  .real-nasa-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(11,61,145,0.4);
+    border: 1px solid rgba(79,195,247,0.4);
+    border-radius: 4px;
+    padding: 12px 24px;
+    color: var(--glow-blue);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-decoration: none;
+    transition: all 0.3s;
+  }
+  .real-nasa-link:hover {
+    background: rgba(79,195,247,0.1);
+    border-color: var(--glow-blue);
+  }
+
+  .close-btn {
+    margin-top: 8px;
+    background: none;
+    border: 1px solid rgba(255,255,255,0.15);
+    color: #78909c;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    padding: 10px 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .close-btn:hover { color: white; border-color: rgba(255,255,255,0.4); }
+
+  /* floating particles during fool */
+  .fool-particle {
+    position: fixed;
+    font-size: 24px;
+    animation: floatUp linear forwards;
+    pointer-events: none;
+    z-index: 998;
+  }
+  @keyframes floatUp {
+    from { transform: translateY(0) rotate(0deg); opacity: 1; }
+    to   { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+  }
+
+  /* FOOTER */
+  footer {
+    margin-top: 80px;
+    padding: 24px 40px;
+    border-top: 1px solid rgba(79,195,247,0.1);
+    text-align: center;
+    font-size: 11px;
+    color: #37474f;
+    letter-spacing: 1px;
+  }
+
+  /* TRUST BADGES */
+  .trust-row {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    margin: 40px auto;
+    max-width: 700px;
+    padding: 0 24px;
+    animation: fadeUp 0.8s ease both;
+    animation-delay: 1.4s;
+  }
+  .trust-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #78909c;
+    letter-spacing: 1px;
+  }
+  .trust-icon { color: var(--glow-blue); font-size: 16px; }
+</style>
+</head>
+<body>
+
+<!-- Starfield canvas -->
+<div id="starfield"></div>
+
+<div class="page">
+  <header>
+    <div class="nasa-logo">
+      <div class="nasa-meatball">NASA</div>
+      <div class="site-title">National Aeronautics and Space Administration</div>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="artemis-badge">🌙 Artemis Mission</div>
+    <h1>Send Your <span>Name</span><br>to the Moon</h1>
+    <p class="subtitle">
+      NASA's Artemis program has compiled <strong style="color:var(--accent-gold)">5.7 billion names</strong>
+      that will orbit the Moon aboard the Orion spacecraft — and yours could be among them.
+    </p>
+  </section>
+
+  <!-- Moon visual -->
+  <div style="display:flex;justify-content:center;">
+    <div class="moon-scene">
+      <div class="moon"></div>
+      <div class="orbit-ring"><div class="orbit-dot"></div></div>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-bar">
+    <div class="stat">
+      <span class="stat-num">5.7B</span>
+      <span class="stat-label">Names Registered</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">384,400<small style="font-size:12px">km</small></span>
+      <span class="stat-label">Distance to Moon</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">2025</span>
+      <span class="stat-label">Artemis Launch Year</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">∞</span>
+      <span class="stat-label">Legacy in Space</span>
+    </div>
+  </div>
+
+  <!-- CTA Card -->
+  <div class="cta-section">
+    <div class="cta-card">
+      <h2>Your Name, In Lunar Orbit</h2>
+      <p>
+        Through the <span class="highlight">Artemis Send Your Name to the Moon</span> campaign,
+        NASA is giving humanity the chance to have their name fly aboard the Orion spacecraft.
+        The names are encoded on a flash drive delivered to deep space — traveling farther than
+        any human has ever journeyed.
+      </p>
+      <p>
+        Join <span class="highlight">5,724,941,776 people</span> worldwide who have already
+        claimed their place in space history. Registration takes just seconds and your boarding
+        pass is ready instantly.
+      </p>
+
+      <div class="deadline">
+        <div class="deadline-dot"></div>
+        REGISTRATION CLOSES: APRIL 1, 2025 — 11:59 PM EDT
+      </div>
+
+      <br>
+
+      <!-- THE PRANK BUTTON -->
+      <button class="prank-btn" onclick="triggerPrank()">
+        <span class="btn-icon">🚀</span>
+        Register Your Name — It's Free
+      </button>
+    </div>
+  </div>
+
+  <!-- Trust Row -->
+  <div class="trust-row">
+    <div class="trust-item"><span class="trust-icon">🛡️</span> Official NASA Program</div>
+    <div class="trust-item"><span class="trust-icon">🔒</span> Secure Registration</div>
+    <div class="trust-item"><span class="trust-icon">🌍</span> Open Worldwide</div>
+    <div class="trust-item"><span class="trust-icon">🎟️</span> Free Boarding Pass</div>
+  </div>
+
+  <footer>
+    National Aeronautics and Space Administration · NASA.gov · Artemis Program
+    <br><br>
+    <span style="color:#263238;font-size:10px;">This page is an April Fools joke — made with love for space nerds 🚀</span>
+  </footer>
+</div>
+
+<!-- ========================
+     APRIL FOOL OVERLAY
+======================== -->
+<div id="foolOverlay">
+  <div class="confetti-wrap" id="confettiWrap"></div>
+
+  <!-- Stage 1: Launch countdown -->
+  <div id="stage-launch">
+    <div class="launch-text">⚡ Processing Registration ⚡</div>
+    <div class="countdown-num" id="countNum">3</div>
+    <div class="progress-bar-wrap">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <div class="launch-text" id="launchStatus">Uploading your name to NASA servers...</div>
+    <div class="exhaust">
+      <div class="exhaust-dot"></div>
+      <div class="exhaust-dot"></div>
+      <div class="exhaust-dot"></div>
+    </div>
+  </div>
+
+  <!-- Stage 2: The reveal -->
+  <div id="stage-fool">
+    <div class="fool-emoji">🤡</div>
+    <div class="fool-title">April Fools!</div>
+    <p class="fool-sub">
+      Ha! You almost made it to the Moon 🌙<br><br>
+      <strong>But wait —</strong> the NASA "Send Your Name" program is actually <strong>REAL!</strong>
+      NASA genuinely flies names to space. This was just a prank about the timing.
+    </p>
+
+    <div class="real-link-row">
+      <div class="real-link-label">✅ Visit the Actual NASA Program</div>
+      <a class="real-nasa-link" href="https://www.nasa.gov/send-your-name-with-artemis/" target="_blank" rel="noopener">
+        🚀 nasa.gov — Send Your Name with Artemis
+      </a>
+    </div>
+
+    <button class="close-btn" onclick="closeOverlay()">← Go Back to Earth</button>
+  </div>
+</div>
+
+<script>
+  // ---- STARFIELD ----
+  const sf = document.getElementById('starfield');
+  for (let i = 0; i < 200; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random() * 2.5 + 0.5;
+    s.style.cssText = `
+      width:${size}px; height:${size}px;
+      top:${Math.random()*100}%; left:${Math.random()*100}%;
+      --d:${(Math.random()*3+1.5).toFixed(1)}s;
+      animation-delay:${(Math.random()*3).toFixed(1)}s;
+    `;
+    sf.appendChild(s);
+  }
+
+  // ---- PRANK LOGIC ----
+  const statusMsgs = [
+    'Uploading your name to NASA servers...',
+    'Encoding to flash drive format...',
+    'Synchronizing with Orion spacecraft...',
+    'Plotting lunar orbit trajectory...',
+    'Boarding pass confirmed! 🎟️',
+  ];
+
+  let countdownVal = 3;
+  let countInterval;
+
+  function triggerPrank() {
+    const overlay = document.getElementById('foolOverlay');
+    overlay.classList.add('show');
+    overlay.style.display = 'flex';
+
+    document.getElementById('stage-launch').style.display = 'flex';
+    document.getElementById('stage-fool').style.display = 'none';
+
+    countdownVal = 3;
+    document.getElementById('countNum').textContent = countdownVal;
+    document.getElementById('progressFill').style.width = '0%';
+
+    let step = 0;
+    document.getElementById('launchStatus').textContent = statusMsgs[0];
+
+    const numEl = document.getElementById('countNum');
+    const fill = document.getElementById('progressFill');
+    const status = document.getElementById('launchStatus');
+
+    // Progress
+    const totalDuration = 3800; // ms
+    const startTime = Date.now();
+    function animateProgress() {
+      const elapsed = Date.now() - startTime;
+      const pct = Math.min((elapsed / totalDuration) * 100, 100);
+      fill.style.width = pct + '%';
+      const statusIdx = Math.floor((pct / 100) * (statusMsgs.length - 1));
+      status.textContent = statusMsgs[statusIdx];
+      if (pct < 100) requestAnimationFrame(animateProgress);
+    }
+    requestAnimationFrame(animateProgress);
+
+    // Countdown digits
+    countInterval = setInterval(() => {
+      countdownVal--;
+      if (countdownVal <= 0) {
+        clearInterval(countInterval);
+        numEl.textContent = '🚀';
+        setTimeout(showFool, 700);
+      } else {
+        numEl.textContent = countdownVal;
+        // re-trigger pop animation
+        numEl.style.animation = 'none';
+        numEl.offsetHeight; // reflow
+        numEl.style.animation = 'countPop 0.8s cubic-bezier(0.175,0.885,0.32,1.275) forwards';
+      }
+    }, 1200);
+  }
+
+  function showFool() {
+    document.getElementById('stage-launch').style.display = 'none';
+    const fool = document.getElementById('stage-fool');
+    fool.style.display = 'flex';
+    fool.style.animation = 'foolReveal 0.8s cubic-bezier(0.175,0.885,0.32,1.275) both';
+    spawnConfetti();
+    spawnParticles();
+  }
+
+  function spawnConfetti() {
+    const wrap = document.getElementById('confettiWrap');
+    wrap.innerHTML = '';
+    const colors = ['#fc3d21','#ffd700','#4fc3f7','#0b3d91','#e8f4fd','#ff6b9d','#a8ff78'];
+    for (let i = 0; i < 80; i++) {
+      const p = document.createElement('div');
+      p.className = 'confetti-piece';
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      const left = Math.random() * 100;
+      const dur = (Math.random() * 2 + 2).toFixed(1);
+      const delay = (Math.random() * 1.5).toFixed(2);
+      const rot = Math.random() * 360;
+      p.style.cssText = `
+        left:${left}vw; background:${color};
+        transform: rotate(${rot}deg);
+        animation: confettiFall ${dur}s ${delay}s linear forwards;
+        width:${Math.random()*8+4}px; height:${Math.random()*12+6}px;
+      `;
+      wrap.appendChild(p);
+    }
+  }
+
+  function spawnParticles() {
+    const emojis = ['🌙','⭐','🚀','✨','🎉','🎊','🌟','💫'];
+    for (let i = 0; i < 12; i++) {
+      setTimeout(() => {
+        const p = document.createElement('div');
+        p.className = 'fool-particle';
+        p.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        p.style.cssText = `
+          left:${Math.random()*90+5}vw;
+          bottom: -20px;
+          animation: floatUp ${(Math.random()*3+3).toFixed(1)}s linear forwards;
+          animation-delay: 0s;
+        `;
+        document.body.appendChild(p);
+        setTimeout(() => p.remove(), 7000);
+      }, i * 250);
+    }
+  }
+
+  function closeOverlay() {
+    const overlay = document.getElementById('foolOverlay');
+    overlay.style.opacity = '0';
+    overlay.style.transition = 'opacity 0.4s';
+    setTimeout(() => {
+      overlay.classList.remove('show');
+      overlay.style.display = 'none';
+      overlay.style.opacity = '1';
+      overlay.style.transition = '';
+    }, 400);
+  }
+</script>
+</body>
+</html>
